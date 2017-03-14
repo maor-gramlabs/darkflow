@@ -3,19 +3,21 @@ from . import yolov2
 from . import vanilla
 from os import sep
 
+
 class framework(object):
     constructor = vanilla.constructor
     loss = vanilla.train.loss
-    
+
     def __init__(self, meta, FLAGS):
         model = meta['model'].split(sep)[-1]
         model = '.'.join(model.split('.')[:-1])
         meta['name'] = model
-        
+
         self.constructor(meta, FLAGS)
 
     def is_inp(self, file_name):
         return True
+
 
 class YOLO(framework):
     constructor = yolo.constructor
@@ -31,6 +33,7 @@ class YOLO(framework):
     findboxes = yolo.test.findboxes
     process_box = yolo.test.process_box
 
+
 class YOLOv2(framework):
     constructor = yolo.constructor
     parse = yolo.data.parse
@@ -44,6 +47,7 @@ class YOLOv2(framework):
     findboxes = yolov2.test.findboxes
     process_box = yolo.test.process_box
 
+
 """
 framework factory
 """
@@ -52,6 +56,7 @@ types = {
     '[detection]': YOLO,
     '[region]': YOLOv2
 }
+
 
 def create_framework(meta, FLAGS):
     net_type = meta['type']
