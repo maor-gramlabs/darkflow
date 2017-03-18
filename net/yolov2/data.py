@@ -39,8 +39,8 @@ def _batch(self, chunk):
         if cx >= W or cy >= H: return None, None
         obj[3] = float(obj[3] - obj[1]) / w
         obj[4] = float(obj[4] - obj[2]) / h
-        obj[3] = np.sqrt(obj[3])
-        obj[4] = np.sqrt(obj[4])
+        # Removed: obj[3] = np.sqrt(obj[3])
+        # Removed: obj[4] = np.sqrt(obj[4])
         obj[1] = cx - np.floor(cx)  # centerx
         obj[2] = cy - np.floor(cy)  # centery
         obj += [int(np.floor(cy) * W + np.floor(cx))]
@@ -58,10 +58,14 @@ def _batch(self, chunk):
         probs[obj[5], :, labels.index(obj[0])] = 1.
         proid[obj[5], :, :] = [[1.] * C] * B
         coord[obj[5], :, :] = [obj[1:5]] * B
-        prear[obj[5], 0] = obj[1] - obj[3] ** 2 * .5 * W  # xleft
-        prear[obj[5], 1] = obj[2] - obj[4] ** 2 * .5 * H  # yup
-        prear[obj[5], 2] = obj[1] + obj[3] ** 2 * .5 * W  # xright
-        prear[obj[5], 3] = obj[2] + obj[4] ** 2 * .5 * H  # ybot
+        prear[obj[5], 0] = obj[1] - obj[3] * .5 * W  # xleft
+        prear[obj[5], 1] = obj[2] - obj[4] * .5 * H  # yup
+        prear[obj[5], 2] = obj[1] + obj[3] * .5 * W  # xright
+        prear[obj[5], 3] = obj[2] + obj[4] * .5 * H  # ybot
+        # prear[obj[5], 0] = obj[1] - obj[3] ** 2 * .5 * W  # xleft
+        # prear[obj[5], 1] = obj[2] - obj[4] ** 2 * .5 * H  # yup
+        # prear[obj[5], 2] = obj[1] + obj[3] ** 2 * .5 * W  # xright
+        # prear[obj[5], 3] = obj[2] + obj[4] ** 2 * .5 * H  # ybot
         confs[obj[5], :] = [1.] * B
 
     # Finalise the placeholders' values
